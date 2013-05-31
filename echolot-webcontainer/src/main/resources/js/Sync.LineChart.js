@@ -20,7 +20,8 @@ exxcellent.LineChart = Core.extend(Echo.Component, {
         XAXIS_SECTORS: 'xaxisSectors',
         YAXIS_SECTORS: 'yaxisSectors',
 
-
+        FILL_DIFFERENCE: 'fillDifference',
+        FILL_DIFFERENCE_COLOR: 'fillDifferenceColor',
 
         FILL_CHART: 'fillChart',
         LINE_COLOR: 'lineColor',
@@ -62,18 +63,17 @@ exxcellent.LineChart = Core.extend(Echo.Component, {
 
 /**
  * The data object for the LineChart.
- * The only thing you HAVE to specify is 'points'
+ * The only thing you HAVE to specify is 'lines'
  * All other attributes will come with suitable default values.
  */
 exxcellent.model.LineChartModel = Core.extend({
-    /** Should this PIE be animated */
-    points: null,
+    lines: null,
 
-    $construct : function(points) {
-        this.points = points;
+    $construct : function(lines) {
+        this.lines = lines;
     },
 
-    /** Return the string representation of this PieModel. */
+    /** Return the string representation of this LineChartModel. */
     toString : function() {
         return 'I am a LineChartModel';
     }
@@ -84,16 +84,51 @@ exxcellent.model.LineChartModel = Core.extend({
  */
 exxcellent.model.AxisModel = Core.extend({
     xAxisValues: null,
+    xAxisLabels: null,
     yAxisValues: null,
+    yAxisLabels: null,
 
-
-    $construct : function(xAxisValues, yAxisValues) {
+    $construct : function(xAxisValues, xAxisLabels, yAxisValues, yAxisLabels) {
         this.xAxisValues = xAxisValues;
+        this.xAxisLabels = xAxisLabels;
         this.yAxisValues = yAxisValues;
+        this.yAxisLabels = yAxisLabels;
     },
 
     toString : function() {
         return 'AxisModel - xAxis: ' + this.xAxisValues + ' yAxis: ' + this.yAxisValues;
+    }
+});
+
+/**
+ * The data object for a line
+ */
+exxcellent.model.Line = Core.extend({
+    points: null,
+    identifier: null,
+    label: '',
+    lineColor: null,
+    dotColor: null,
+    interpolation: null,
+
+    /**
+     * Constructs a line
+     * @param points the points this line consists of
+     * @param identifier an optional unique identifier for this line
+     * @param label an optional label for this line
+     * @param lineColor the color of this line
+     */
+    $construct : function(points, identifier, label, lineColor, dotColor, interpolation) {
+        this.points = points;
+        this.identifier = identifier;
+        this.label = label;
+        this.lineColor = lineColor;
+        this.dotColor = dotColor;
+        this.interpolation = interpolation;
+    },
+
+    toString: function() {
+        return 'Label: ' + this.label;
     }
 });
 
@@ -125,6 +160,8 @@ exxcellent.model.Point = Core.extend({
  */
 exxcellent.model.LineChartLayout = Core.extend({
     drawGrid: true,
+    fillDifference: false,
+    fillDifferenceColor: '#f00',
     gridColor: '#000',
     xaxisSectors: 10,
     yaxisSectors: 10,
@@ -150,6 +187,14 @@ exxcellent.model.LineChartLayout = Core.extend({
 
     isDrawGrid : function() {
         return this.drawGrid;
+    },
+
+    isFillDifference : function() {
+        return this.fillDifference;
+    },
+
+    getFillDifferenceColor : function() {
+        return this.fillDifferenceColor;
     },
 
     getGridColor : function() {
@@ -330,6 +375,8 @@ exxcellent.LineChartSync = Core.extend(Echo.Render.ComponentSync, {
         lineChartLayout.popupForeground = this.component.render(exxcellent.LineChart.POPUP_FOREGROUND);
         lineChartLayout.popupFont = this._renderFont(this.component.render(exxcellent.LineChart.POPUP_FONT));
         lineChartLayout.drawGrid = this.component.render(exxcellent.LineChart.DRAW_GRID);
+        lineChartLayout.fillDifference = this.component.render(exxcellent.LineChart.FILL_DIFFERENCE);
+        lineChartLayout.fillDifferenceColor = this.component.render(exxcellent.LineChart.FILL_DIFFERENCE_COLOR);
         lineChartLayout.xaxisSectors = this.component.render(exxcellent.LineChart.XAXIS_SECTORS);
         lineChartLayout.yaxisSectors = this.component.render(exxcellent.LineChart.YAXIS_SECTORS);
         lineChartLayout.foreground = this.component.render(exxcellent.LineChart.FOREGROUND);
@@ -348,7 +395,7 @@ exxcellent.LineChartSync = Core.extend(Echo.Render.ComponentSync, {
 
     /**
      * Get the LineChart-Model.
-     * In case of a JSON-Object we parse it to create the exxcellent.model.PieModel
+     * In case of a JSON-Object we parse it to create the exxcellent.model.LineChartModel
      */
     _getLineChartModel : function () {
         var value = this.component.render(exxcellent.LineChart.LINE_CHART_MODEL);
@@ -361,7 +408,7 @@ exxcellent.LineChartSync = Core.extend(Echo.Render.ComponentSync, {
 
     /**
      * Get the Axis-Model.
-     * In case of a JSON-Object we parse it to create the exxcellent.model.PieModel
+     * In case of a JSON-Object we parse it to create the exxcellent.model.LineChartModel
      */
     _getAxisModel : function () {
         var value = this.component.render(exxcellent.LineChart.AXIS_MODEL);

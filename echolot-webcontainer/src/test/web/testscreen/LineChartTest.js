@@ -43,6 +43,11 @@ exxcellent.test.LineChartTest = Core.extend({
                             this._lineChart.set(exxcellent.LineChart.AXIS_MODEL, this._createAxisModel_1().axisModel);
                         }
                         ),
+                this._createButton("Axis Model 2",
+                        function() {
+                            this._lineChart.set(exxcellent.LineChart.AXIS_MODEL, this._createAxisModel_2().axisModel);
+                        }
+                ),
                 this._createButton("Toggle - showPopup",
                         function() {
                             this._lineChart.set(exxcellent.LineChart.SHOW_POPUP, !this._lineChart.get(exxcellent.LineChart.SHOW_POPUP));
@@ -50,6 +55,10 @@ exxcellent.test.LineChartTest = Core.extend({
                 this._createButton("Toggle - fillChart",
                         function() {
                             this._lineChart.set(exxcellent.LineChart.FILL_CHART, !this._lineChart.get(exxcellent.LineChart.FILL_CHART));
+                        }),
+                this._createButton("Toggle - fillDifference",
+                        function() {
+                            this._lineChart.set(exxcellent.LineChart.FILL_DIFFERENCE, !this._lineChart.get(exxcellent.LineChart.FILL_DIFFERENCE));
                         }),
                 this._createButton("Toggle - drawGrid",
                         function() {
@@ -61,6 +70,10 @@ exxcellent.test.LineChartTest = Core.extend({
                 this._createButton("Set Random Foreground",
                         function() {
                             this._lineChart.set(exxcellent.LineChart.FOREGROUND, Raphael.getColor());
+                        }),
+                this._createButton("Set Random Fill Difference Color",
+                        function() {
+                            this._lineChart.set(exxcellent.LineChart.FILL_DIFFERENCE_COLOR, Raphael.getColor());
                         }),
                 this._createButton("Set Random LineColor",
                         function() {
@@ -171,7 +184,7 @@ exxcellent.test.LineChartTest = Core.extend({
             background: '#ffcc66',
             drawGrid: true,
             gridColor: '#000',
-            xaxisSectors: 10,
+            xaxisSectors: 11,
             yaxisSectors: 10,
             showPopup: true,
             popupBackground: '#6699ff',
@@ -182,13 +195,15 @@ exxcellent.test.LineChartTest = Core.extend({
                 typeface: ["Courier New", "Courier", "Monospace"],
                 italic: true
             },
-            fillChart: true,
+            fillChart: false,
             lineColor: '#383',
             dotColor: '#000',
-            xscaleMax: 100,
+            xscaleMax: 11,
             yscaleMax: 100,
-            width : 300,
-            height: 200
+            width : 700,
+            height: 400,
+            fillDifference: true,
+            fillDifferenceColor: '#ff0000',
         });
     },
 
@@ -197,19 +212,46 @@ exxcellent.test.LineChartTest = Core.extend({
      */
     _createLineChartModel_1: function() {
         // the sectors
-        var points = new Array(
-                new exxcellent.model.Point(0, 20, 'Label-Text 1', 1),
-                new exxcellent.model.Point(10, 80, 'Label-Text 2', 2),
-                new exxcellent.model.Point(25, 30, 'Label-Text 3', 3),
-                new exxcellent.model.Point(50, 90, 'Label-Text 4', 4),
-                new exxcellent.model.Point(70, 10, 'Label-Text 5', 5),
-                new exxcellent.model.Point(90, 25, 'Label-Text 6', 6),
-                new exxcellent.model.Point(100, 0, 'Label-Text 7', 7)
-                );
+        var lines = new Array(
+            new exxcellent.model.Line(
+                    new Array(
+                            new exxcellent.model.Point(0, 20, 'Label-Text 1', 1),
+                            new exxcellent.model.Point(1, 80, 'Label-Text 2', 2),
+                            new exxcellent.model.Point(2, 30, 'Label-Text 3', 3),
+                            new exxcellent.model.Point(3, 90, 'Label-Text 4', 4),
+                            new exxcellent.model.Point(4, 10, 'Label-Text 5', 5),
+                            new exxcellent.model.Point(5, 25, 'Label-Text 6', 6),
+                            new exxcellent.model.Point(6, 45, 'Label-Text 7', 7),
+                            new exxcellent.model.Point(7, 70, 'Label-Text 8', 8),
+                            new exxcellent.model.Point(8, 80, 'Label-Text 9', 9),
+                            new exxcellent.model.Point(9, 70, 'Label-Text 10', 10),
+                            new exxcellent.model.Point(10, 60, 'Label-Text 11', 11),
+                            new exxcellent.model.Point(11, 60, 'Label-Text 12', 12)
+                    ),
+                    "line1",
+                    "Label Line1"
+            ),
+            new exxcellent.model.Line(
+                    new Array(
+                            new exxcellent.model.Point(0, 10, 'l2 Label-Text 1', 8),
+                            new exxcellent.model.Point(3, 40, 'l2 Label-Text 2', 9),
+                            new exxcellent.model.Point(5, 20, 'l2 Label-Text 3', 10),
+                            new exxcellent.model.Point(6, 40, 'l2 Label-Text 4', 11),
+                            new exxcellent.model.Point(7, 90, 'l2 Label-Text 5', 12),
+                            new exxcellent.model.Point(8, 15, 'l2 Label-Text 6', 13),
+                            new exxcellent.model.Point(11, 50, 'l2 Label-Text 7', 14)
+                    ),
+                    "line2",
+                    "Label Line2",
+                    "red",
+                    "red",
+                    "bezier"
+            )
+        );
 
         // return the whole thing
         return new Object({
-            lineChartModel:new exxcellent.model.LineChartModel(points)
+            lineChartModel:new exxcellent.model.LineChartModel(lines)
         });
     },
     /**
@@ -226,7 +268,7 @@ exxcellent.test.LineChartTest = Core.extend({
 
         // return the whole thing
         return new Object({
-            lineChartModel:new exxcellent.model.LineChartModel(points)
+            lineChartModel:new exxcellent.model.LineChartModel(new Array(new exxcellent.model.Line(points)))
         });
     },
     /**
@@ -250,7 +292,7 @@ exxcellent.test.LineChartTest = Core.extend({
 
         // return the whole thing
         return new Object({
-            lineChartModel:new exxcellent.model.LineChartModel(points)
+            lineChartModel:new exxcellent.model.LineChartModel(new Array(new exxcellent.model.Line(points)))
         });
     },
 
@@ -273,7 +315,47 @@ exxcellent.test.LineChartTest = Core.extend({
 
         // return the whole thing
         return new Object({
-            axisModel:new exxcellent.model.AxisModel(xAxisValues, yAxisValues)
+            axisModel:new exxcellent.model.AxisModel(xAxisValues, null, yAxisValues, null)
+        });
+    },
+
+    /**
+     * Creates a LineChartModel
+     */
+    _createAxisModel_2: function() {
+        // the sectors
+        var xAxisValues = new Array(
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+        );
+        var xAxisLabels = new Array('Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June',
+                'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.');
+        var yAxisValues = new Array(
+                10,
+                20,
+                50,
+                100
+        );
+        var yAxisLabels = new Array(
+                '10',
+                '20',
+                '50',
+                '100'
+        );
+
+        // return the whole thing
+        return new Object({
+            axisModel:new exxcellent.model.AxisModel(xAxisValues, xAxisLabels, yAxisValues, yAxisLabels)
         });
     },
 

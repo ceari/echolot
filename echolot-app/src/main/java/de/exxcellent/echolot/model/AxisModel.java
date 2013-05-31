@@ -39,8 +39,10 @@ import java.io.Serializable;
  */
 public class AxisModel implements Serializable{
 
-    private String[] xAxisValues;
-    private String[] yAxisValues;
+    private Integer[] xAxisValues;
+    private String[] xAxisLabels;
+    private Integer[] yAxisValues;
+    private String[] yAxisLabels;
 
     /**
      * Default-Constructor
@@ -48,23 +50,35 @@ public class AxisModel implements Serializable{
      * @param xAxisValues
      * @param yAxisValues
      */
-    public AxisModel(String[] xAxisValues, String[] yAxisValues) {
+    public AxisModel(Integer[] xAxisValues, Integer[] yAxisValues) {
+        this(xAxisValues, null, yAxisValues, null);
+    }
+
+    /**
+     * Default-Constructor
+     *
+     * @param xAxisValues
+     * @param yAxisValues
+     */
+    public AxisModel(Integer[] xAxisValues, String[] xAxisLabels, Integer[] yAxisValues, String[] yAxisLabels) {
         this.xAxisValues = xAxisValues;
         this.yAxisValues = yAxisValues;
+        this.xAxisLabels = xAxisLabels;
+        this.yAxisLabels = yAxisLabels;
     }
 
     /**
      * Returns the caption of the xAxis
      * @return
      */
-    public String[] getXAxisValues() {
+    public Integer[] getXAxisValues() {
         return xAxisValues;
     }
         /**
      * Returns the caption of the yAxis
      * @return
      */
-    public String[] getYAxisValues() {
+    public Integer[] getYAxisValues() {
         return yAxisValues;
     }
 
@@ -72,14 +86,30 @@ public class AxisModel implements Serializable{
      * Set the caption of the xAxis
      * @param xAxisValues
      */
-    public void setXAxisValues(final String[] xAxisValues) {
+    public void setXAxisValues(final Integer[] xAxisValues) {
         this.xAxisValues = xAxisValues;
     }
     /**
      * Set the caption of the yAxis
      * @param xAxisValues
      */
-    public void setYAxisValues(final String []yAxisValues) {
+    public void setYAxisValues(final Integer []yAxisValues) {
         this.yAxisValues = yAxisValues;
+    }
+
+    public String[] getXAxisLabels() {
+        return xAxisLabels;
+    }
+
+    public void setXAxisLabels(String[] xAxisLabels) {
+        this.xAxisLabels = xAxisLabels;
+    }
+
+    public String[] getYAxisLabels() {
+        return yAxisLabels;
+    }
+
+    public void setYAxisLabels(String[] yAxisLabels) {
+        this.yAxisLabels = yAxisLabels;
     }
 }

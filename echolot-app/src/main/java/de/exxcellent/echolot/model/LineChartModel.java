@@ -38,21 +38,21 @@ import java.io.Serializable;
  */
 public class LineChartModel implements Serializable{
 
-    private final LineChartPoint[] points;
+    private final LineChartLine[] lines;
 
     /**
      * Default-Constructor
-     * @param points
+     * @param lines
      */
-    public LineChartModel(final LineChartPoint[] points) {
-        this.points = points;
+    public LineChartModel(final LineChartLine[] lines) {
+        this.lines = lines;
     }
 
     /**
      * Returns the defined points as Array
      * @return
      */
-    public LineChartPoint[] getPoints() {
-        return points;
+    public LineChartLine[] getLines() {
+        return lines;
     }
 }

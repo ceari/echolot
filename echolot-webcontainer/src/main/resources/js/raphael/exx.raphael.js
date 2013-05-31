@@ -55,6 +55,9 @@
         // --- Draw legendValues for x-y-Axis ---
         // --------------------------------------
 
+        var xScale = lineChartLayout.getWidth() / lineChartLayout.getXscaleMax();
+        var yScale = lineChartLayout.getHeight() / lineChartLayout.getYscaleMax();
+
         // -- xAxis --
         if (!axisModel || !axisModel.xAxisValues) {
             // Fallback, if axisModel is null or axisModel.xAxisValues is null
@@ -65,8 +68,15 @@
         } else {
             // if we have values for the xAxis, we draw them instead of the dummy-Numbers
             var xAxisArray = axisModel.xAxisValues;
-            for (var i = 0; i < xAxisArray.length; i++) {
-                this.text((gridWidth / (xAxisArray.length - 1)) * i + xOffset, gridHeight + yOffset + 15, xAxisArray[i]).attr({fill:axisForeground}).attr(axisFont);
+            var xAxisLabels = axisModel.xAxisLabels;
+            if (xAxisLabels) {
+                for (var i = 0; i < xAxisArray.length; i++) {
+                    this.text(xAxisArray[i] * xScale + xOffset, gridHeight + yOffset + 15, xAxisLabels[i]).attr({fill:axisForeground}).attr(axisFont);
+                }
+            } else {
+                for (var i = 0; i < xAxisArray.length; i++) {
+                    this.text((gridWidth / (xAxisArray.length - 1)) * i + xOffset, gridHeight + yOffset + 15, xAxisArray[i].toString()).attr({fill:axisForeground}).attr(axisFont);
+                }
             }
         }
 
@@ -76,6 +86,105 @@
             var tmp_y = lineChartLayout.getYscaleMax() / heightScale;
             for (var i = 0; i <= heightScale; i++) {
                 this.text(xOffset - 20, (gridHeight / heightScale) * i + yOffset, Math.round(tmp_y * (heightScale - i))).attr({fill:axisForeground}).attr(axisFont);
+            }
+        } else {
+            // if we have values for the yAxis, we draw them instead of the dummy-Numbers
+            var yAxisArray = axisModel.yAxisValues;
+            var yAxisLabels = axisModel.yAxisLabels;
+            if (yAxisLabels) {
+                for (var i = 0; i < yAxisArray.length; i++) {
+                    this.text(xOffset - 20, yOffset + gridHeight - yAxisArray[i] * yScale, yAxisLabels[i]).attr({fill:axisForeground}).attr(axisFont);
+                }
+            } else {
+                for (var i = 0; i < yAxisArray.length; i++) {
+                    this.text(xOffset - 20, (gridHeight / (yAxisArray.length - 1)) * i + yOffset, yAxisArray[yAxisArray.length - i - 1].toString()).attr({fill:axisForeground}).attr(axisFont);
+                }
+            }
+        }
+        return this.path(path.join(",")).attr({stroke: color});
+    };
+
+
+    /**
+     * Draws bar chart axes !!DRAFT!!
+     * @param xOffset
+     * @param yOffset
+     * @param gridWidth
+     * @param gridHeight
+     * @param widthScale
+     * @param heightScale
+     * @param color
+     */
+    Raphael.fn.exx.drawBarChartAxes = function(xOffset, yOffset, barChartLayout, axisModel, barChartXOrigin, barChartYOrigin, yScale, xScale, minVal, maxVal) {
+
+        var tX = function(x) {
+            return barChartXOrigin + x * xScale;
+        }
+
+        var tY = function(y) {
+            return barChartYOrigin - y * yScale;
+        }
+
+        /**
+         * Draws something like that on screen:
+         *  _ _ _ _
+         * |_|_|_|_|
+         * |_|_|_|_|
+         * |_|_|_|_|
+         */
+            // we use a Fallback for every variable - this makes it easier to use this function
+        xOffset = xOffset || 0;
+        yOffset = yOffset || 0;
+        var gridWidth = barChartLayout.getWidth() || 200;
+        var gridHeight = barChartLayout.getHeight() || 100;
+        var widthScale =  10;
+        var heightScale =  10;
+        var color = barChartLayout.getGridColor() || "#000";
+        var axisForeground = barChartLayout.getForeground() || '#000';
+        var axisFont = barChartLayout.getAxisFont() || null;
+        var path = ["M", tX(0) +.5, tY(0) +.5,
+                    "L", tX(0) +.5, tY(barChartLayout.getVScaleMax()) +.5,
+                    "M", tX(0) +.5, tY(0) +.5,
+                    "L", tX(gridWidth) +.5, tY(0) +.5,
+                    "M", tX(0) +.5, tY(0) +.5,
+                    "L", tX(0) +.5, tY(barChartLayout.getVScaleMin()) +.5
+        ];
+
+        //path = path.concat(["M", tX(0), Math.round(tY(minVal)) + .5, "H", tX(gridWidth)]);
+        //path = path.concat(["M", tX(0), Math.round(tY(maxVal)) + .5, "H", tX(gridWidth)]);
+
+        /*for (var i = barChartLayout.getVScaleMin(); i <= barChartLayout.getVScaleMax(); i += ((barChartLayout.getVScaleMax() - barChartLayout.getVScaleMin()) / barChartLayout.getVSectors())) {
+            path = path.concat(["M", tX(0), Math.round(tY(i)) + .5, "H", tX(gridWidth)]);
+        }*/
+        /*for (i = 1; i < widthScale; i++) {
+            path = path.concat(["M", Math.round(xOffset + i * columnWidth) + .5, Math.round(yOffset) + .5, "V", Math.round(yOffset + gridHeight) + .5]);
+        }*/
+
+        // --- Draw legendValues for x-y-Axis ---
+        // --------------------------------------
+
+        // -- xAxis --
+        /*if (!axisModel || !axisModel.xAxisValues) {
+            // Fallback, if axisModel is null or axisModel.xAxisValues is null
+            var tmp_x = 100 / widthScale;
+            for (var i = 0; i <= widthScale; i++) {
+                this.text((gridWidth / widthScale) * i + xOffset, gridHeight + yOffset + 15, Math.round(tmp_x * i)).attr({fill:axisForeground}).attr(axisFont);
+            }
+        } else {
+            // if we have values for the xAxis, we draw them instead of the dummy-Numbers
+            var xAxisArray = axisModel.xAxisValues;
+            for (var i = 0; i < xAxisArray.length; i++) {
+                this.text((gridWidth / (xAxisArray.length - 1)) * i + xOffset, gridHeight + yOffset + 15, xAxisArray[i]).attr({fill:axisForeground}).attr(axisFont);
+            }
+        }*/
+
+        // -- yAxis --
+        if (!axisModel || !axisModel.yAxisValues) {
+            // Fallback, if axisModel is null or axisModel.yAxisValues is null
+            //this.text(xOffset - 20, barChartYOrigin - yScale * 50, "50").attr({fill:axisForeground}).attr(axisFont);
+
+            for (var i = barChartLayout.getVScaleMin(); i <= barChartLayout.getVScaleMax(); i += ((barChartLayout.getVScaleMax() - barChartLayout.getVScaleMin()) / barChartLayout.getVSectors())) {
+                this.text(xOffset - 20, tY(i), Math.round(i)).attr({fill:axisForeground}).attr(axisFont);
             }
         } else {
             // if we have values for the yAxis, we draw them instead of the dummy-Numbers
@@ -96,10 +205,11 @@
      * @param chartWidth
      * @param chartHeight
      * @param pointArray
+     * @param line
      * @param xAxisMax - the maxValue of the xAxis
      * @param yAxisMax - the maxValue of the yAxis
      */
-    Raphael.fn.exx.drawLine = function(xOffset, yOffset, pointArray, lineChartLayout, callback) {
+    Raphael.fn.exx.drawLine = function(xOffset, yOffset, pointArray, line, lineChartLayout, callback) {
         // a reference to this - wo only use tis reference from that time on to keep things clear
         var self = this;
         // some scalingVariables
@@ -108,11 +218,12 @@
         var xScale = chartWidth / lineChartLayout.getXscaleMax();
         var yScale = chartHeight / lineChartLayout.getYscaleMax();
 
-        var color = lineChartLayout.getLineColor();
-        var dotColor = lineChartLayout.getDotColor();
+        var color = line.lineColor ? line.lineColor : lineChartLayout.getLineColor();
+        var dotColor = line.dotColor ? line.dotColor : lineChartLayout.getDotColor();
         var showPopup = lineChartLayout.isShowPopup();
         var fillChart = lineChartLayout.fillChart;
-        var interpolation = lineChartLayout.getInterpolation() || 'linear';
+        Core.Debug.consoleWrite("line.interpolation: " + line.interpolation);
+        var interpolation = line.interpolation ? line.interpolation : (lineChartLayout.getInterpolation() || 'linear');
 
         // some variables for PopUp
         var popUpBackground = lineChartLayout.getPopupBackground() || '#000';
@@ -233,13 +344,13 @@
                 var tmp_offset = 0;
 
                 if (interpolation == 'bezier') {
-                    pathArray = pathArray.concat([a.x1, a.y1, x + tmp_offset, y, a.x2, a.y2]);
-                    backGroundPathArray = backGroundPathArray.concat([a.x1, a.y1, x + tmp_offset, y, a.x2, a.y2]);
+                    pathArray = pathArray.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
+                    backGroundPathArray = backGroundPathArray.concat([a.x1, a.y1, x, y, a.x2, a.y2]);
                 } else if (interpolation == 'linear') {
-                    pathArray = pathArray.concat([ x + tmp_offset, y, x + tmp_offset, y,  x + tmp_offset, y]);  // <- for drawing just a line between the dots
-                    backGroundPathArray = backGroundPathArray.concat([ x + tmp_offset, y, x + tmp_offset, y,  x + tmp_offset, y]);
+                    pathArray = pathArray.concat([ x, y, x, y,  x, y]);  // <- for drawing just a line between the dots
+                    backGroundPathArray = backGroundPathArray.concat([ x, y, x, y,  x, y]);
                 } else if (interpolation == 'none') {
-                    backGroundPathArray = backGroundPathArray.concat([ x + tmp_offset, y, x + tmp_offset, y,  x + tmp_offset, y]);
+                    backGroundPathArray = backGroundPathArray.concat([ x, y, x, y,  x, y]);
                 }
 
             }
@@ -320,10 +431,16 @@
         path.attr({path: pathArray});
         if (fillChart) {
             backGroundPanelPath.attr({path: backGroundPathArray});
+            // Ignore mouse events for background filler in case backgrounds of multiple lines overlap
+            // Otherwise the line dots in the background can't receive click events
+            backGroundPanelPath.node.style.pointerEvents = 'none';
         }
         blanket.toFront();
 
-        return self;
+        return {
+            pathArray: pathArray,
+            backGroundPathArray: backGroundPathArray,
+        };
 
     };// End of draw line
 

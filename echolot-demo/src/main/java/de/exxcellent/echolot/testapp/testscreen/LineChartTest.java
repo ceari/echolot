@@ -32,10 +32,7 @@ package de.exxcellent.echolot.testapp.testscreen;
 import de.exxcellent.echolot.app.LineChart;
 import de.exxcellent.echolot.event.PointSelectEvent;
 import de.exxcellent.echolot.listener.PointSelectListener;
-import de.exxcellent.echolot.model.AxisModel;
-import de.exxcellent.echolot.model.Interpolation;
-import de.exxcellent.echolot.model.LineChartModel;
-import de.exxcellent.echolot.model.LineChartPoint;
+import de.exxcellent.echolot.model.*;
 import de.exxcellent.echolot.testapp.ButtonColumn;
 import de.exxcellent.echolot.testapp.StyleUtil;
 import nextapp.echo.app.Color;
@@ -336,7 +333,7 @@ public class LineChartTest extends SplitPane {
                 point_4
         };
 
-        lineChart.setLineChartModel(new LineChartModel(pointArray));
+        lineChart.setLineChartModel(new LineChartModel(new LineChartLine[] { new LineChartLine(pointArray) }));
     }
 
     private void setLineChartModel_2() {
@@ -374,14 +371,15 @@ public class LineChartTest extends SplitPane {
                 point_15
         };
 
-        lineChart.setLineChartModel(new LineChartModel(pointArray));
+        lineChart.setLineChartModel(new LineChartModel(new LineChartLine[] { new LineChartLine(pointArray) }));
     }
 
     private void setAxisModel() {
-        String[] xAxisValues = new String[]{"Jan", "Feb", "Mrz", "Apr"};
-        String[] yAxisValues = new String[]{"a", "b", "c"};
-
-        lineChart.setAxisModel(new AxisModel(xAxisValues, yAxisValues));
+        Integer[] xAxisValues = new Integer[] {50, 100, 150, 200};
+        String[] xAxisLabels = new String[]{"Jan", "Feb", "Mrz", "Apr"};
+        Integer[] yAxisValues = new Integer[] {0, 50, 100};
+        String[] yAxisLabels = new String[]{"a", "b", "c"};
+        lineChart.setAxisModel(new AxisModel(xAxisValues, xAxisLabels, yAxisValues, yAxisLabels));
     }
 
     private void setAxisModelNULL() {

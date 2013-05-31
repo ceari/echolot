@@ -31,10 +31,7 @@ package de.exxcellent.echolot.app;
 
 import de.exxcellent.echolot.event.PointSelectEvent;
 import de.exxcellent.echolot.listener.PointSelectListener;
-import de.exxcellent.echolot.model.AxisModel;
-import de.exxcellent.echolot.model.Interpolation;
-import de.exxcellent.echolot.model.LineChartModel;
-import de.exxcellent.echolot.model.LineChartPoint;
+import de.exxcellent.echolot.model.*;
 import nextapp.echo.app.Color;
 import nextapp.echo.app.Component;
 import nextapp.echo.app.Font;
@@ -56,6 +53,15 @@ public class LineChart extends Component {
      * Color of the grid
      */
     public static final String PROPERTY_GRID_COLOR = "gridColor";
+
+    /**
+     * Fill the space between the first two lines?
+     */
+    public static final String PROPERTY_FILL_DIFFERENCE = "fillDifference";
+    /**
+     * Color used for filling
+     */
+    public static final String PROPERTY_FILL_DIFFERENCE_COLOR = "fillDifferenceColor";
 
     /**
      * Amount of xAxisSectors
@@ -155,6 +161,26 @@ public class LineChart extends Component {
 
     public void setGridColor(final Color gridColor) {
         set(PROPERTY_GRID_COLOR, gridColor);
+    }
+
+    // --- Property: PROPERTY_FILL_DIFFERENCE
+
+    public boolean isFillDifference() {
+        return ((Boolean) get(PROPERTY_FILL_DIFFERENCE)).booleanValue();
+    }
+
+    public void setFillDifference(final boolean doFillDifference) {
+        set(PROPERTY_FILL_DIFFERENCE, Boolean.valueOf(doFillDifference));
+    }
+
+    // --- Property: PROPERTY_FILL_DIFFERENCE_COOR
+
+    public Color getFillDifferenceColor() {
+        return (Color) get(PROPERTY_FILL_DIFFERENCE_COLOR);
+    }
+
+    public void setFillDifferenceColor(final Color fillDifferenceColor) {
+        set(PROPERTY_FILL_DIFFERENCE_COLOR, fillDifferenceColor);
     }
 
     // --- Property: PROPERTY_XAXIS_SECTORS
@@ -400,12 +426,13 @@ public class LineChart extends Component {
      */
     private LineChartPoint findLineChartPoint(final String identifier) {
         if (getLineChartModel() != null) {
-            for (LineChartPoint point : getLineChartModel().getPoints()) {
-                if (point.getIdentifier().equals(identifier)) {
-                    return point;
+            for (LineChartLine line : getLineChartModel().getLines()) {
+                for (LineChartPoint point : line.getPoints()) {
+                    if (point.getIdentifier().equals(identifier)) {
+                        return point;
+                    }
                 }
             }
-
         }
         return null;
     }

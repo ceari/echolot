@@ -34,6 +34,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import de.exxcellent.echolot.SharedService;
 import de.exxcellent.echolot.app.LineChart;
 import de.exxcellent.echolot.model.AxisModel;
+import de.exxcellent.echolot.model.LineChartLine;
 import de.exxcellent.echolot.model.LineChartModel;
 import de.exxcellent.echolot.model.LineChartPoint;
 import nextapp.echo.app.Component;
@@ -90,6 +91,7 @@ public class LineChartPeer extends AbstractComponentSynchronizePeer {
 
         xstream.alias("lineChartModel", LineChartModel.class);
         xstream.alias("points", LineChartPoint.class);
+        xstream.alias("lines", LineChartLine.class);
         xstream.alias("axisModel", AxisModel.class);
 
         xstream.processAnnotations(LineChartModel.class);
